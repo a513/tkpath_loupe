@@ -293,7 +293,6 @@ static int		FindItems(Tcl_Interp *interp, TkPathCanvas *canvasPtr,
 static int		FindArea(Tcl_Interp *interp, TkPathCanvas *canvasPtr,
 			    Tcl_Obj *const *objv, Tk_Uid uid, int enclosed);
 static double		GridAlign(double coord, double spacing);
-static const char**	TkGetStringsFromObjs(int objc, Tcl_Obj *const *objv);
 static void		InitCanvas(void);
 static void		PickCurrentItem(TkPathCanvas *canvasPtr, XEvent *eventPtr);
 static Tcl_Obj *	ScrollFractions(int screen1,
@@ -2055,11 +2054,7 @@ CanvasWidgetCmd(
 		    - canvasPtr->inset, canvasPtr->scrollX1,
 		    canvasPtr->scrollX2));
 	} else {
-	    const char **args = TkGetStringsFromObjs(objc, objv);
-	    type = Tk_GetScrollInfo(interp, objc, args, &fraction, &count);
-	    if (args != NULL) {
-		ckfree((char *) args);
-	    }
+	    type = Tk_GetScrollInfoObj(interp, objc, objv, &fraction, &count);
 	    switch (type) {
 	    case TK_SCROLL_ERROR:
 		result = TCL_ERROR;
@@ -2101,11 +2096,7 @@ CanvasWidgetCmd(
 		    - canvasPtr->inset,
 		    canvasPtr->scrollY1, canvasPtr->scrollY2));
 	} else {
-	    const char **args = TkGetStringsFromObjs(objc, objv);
-	    type = Tk_GetScrollInfo(interp, objc, args, &fraction, &count);
-	    if (args != NULL) {
-		ckfree((char *) args);
-	    }
+	    type = Tk_GetScrollInfoObj(interp, objc, objv, &fraction, &count);
 	    switch (type) {
 	    case TK_SCROLL_ERROR:
 		result = TCL_ERROR;
@@ -7004,41 +6995,6 @@ CanvasSetOrigin(
 	    canvasPtr->xOrigin, canvasPtr->yOrigin,
 	    canvasPtr->xOrigin + Tk_Width(canvasPtr->tkwin),
 	    canvasPtr->yOrigin + Tk_Height(canvasPtr->tkwin));
-}
-
-/*
- *----------------------------------------------------------------------
- *
- * TkGetStringsFromObjs --
- *
- * Results:
- *	Converts object list into string list.
- *
- * Side effects:
- *	Memory is allocated for the objv array, which must be freed using
- *	ckfree() when no longer needed.
- *
- *----------------------------------------------------------------------
- */
-
-/* @@@ TODO: this shouldn't be needed when fully objectified! */
-
-static const char **
-TkGetStringsFromObjs(
-    int objc,
-    Tcl_Obj *const objv[])
-{
-    int i;
-    const char **argv;
-    if (objc <= 0) {
-	return NULL;
-    }
-    argv = (const char **) ckalloc((objc+1) * sizeof(char *));
-    for (i = 0; i < objc; i++) {
-	argv[i] = Tcl_GetString(objv[i]);
-    }
-    argv[objc] = 0;
-    return argv;
 }
 
 #ifndef TKP_NO_POSTSCRIPT
