@@ -535,7 +535,7 @@ GetMiterBbox(PathAtom *atomPtr, double width, double miterLimit)
     npts = 0;
     current[0] = 0.0;
     current[1] = 0.0;
-	second[0] = 0.0;
+    second[0] = 0.0;
     second[1] = 0.0;
 
     /* Find sin(thetaLimit) which is needed to get miter points:
@@ -618,8 +618,8 @@ GetMiterBbox(PathAtom *atomPtr, double width, double miterLimit)
                 if (npts >= 3) {
                     IncludeMiterPointsInRect(p1, p2, p3, &bounds, width, sinThetaLimit);
                 }
-                p1[0] = curve->ctrlX2;
-                p1[1] = curve->ctrlY2;
+                p2[0] = curve->ctrlX2;
+                p2[1] = curve->ctrlY2;
                 p1[0] = curve->anchorX;
                 p1[1] = curve->anchorX;
                 npts += 2;
