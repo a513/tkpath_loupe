@@ -173,7 +173,7 @@ if test "${TEA_PLATFORM}" = "windows" -a "${USE_SDL}" != "yes" ; then
     AC_CACHE_CHECK([if the compiler understands -static-libstdc++],
         tcl_cv_cc_staticlib, [
         hold_cflags=$CFLAGS; CFLAGS="$CFLAGS -static-libstdc++"
-        AC_TRY_COMPILE(,, tcl_cv_cc_staticlib=yes, tcl_cv_cc_staticlib=no)
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[tcl_cv_cc_staticlib=yes],[tcl_cv_cc_staticlib=no])
         CFLAGS=$hold_cflags])
 
 else
@@ -195,7 +195,7 @@ else
 	    AC_CACHE_CHECK([if the compiler understands -static-libstdc++],
 		tcl_cv_cc_staticlib, [
 		hold_cflags=$CFLAGS; CFLAGS="$CFLAGS -static-libstdc++"
-		AC_TRY_COMPILE(,, tcl_cv_cc_staticlib=yes, tcl_cv_cc_staticlib=no)
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[tcl_cv_cc_staticlib=yes],[tcl_cv_cc_staticlib=no])
 		CFLAGS=$hold_cflags])
 	fi
     elif test "${TEA_WINDOWINGSYSTEM}" = "aqua" ; then
@@ -311,4 +311,5 @@ fi
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl])
+AC_OUTPUT
