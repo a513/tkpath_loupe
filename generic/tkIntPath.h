@@ -117,6 +117,8 @@ extern "C" {
 
 #define kPathUnitTMatrix  {1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
 
+#define Point(name, x, y) union {struct {double x, y;}; double name[];}
+
 /*
  * Flag bits for gradient and style changes.
  */
@@ -212,14 +214,12 @@ typedef struct LookupTable {
 typedef struct MoveToAtom {
     PathAtom pathAtom;		/* Generic stuff that's the same for all
                                  * types.  MUST BE FIRST IN STRUCTURE. */
-    double x;
-    double y;
+    Point (point, x, y);
 } MoveToAtom;
 
 typedef struct LineToAtom {
     PathAtom pathAtom;
-    double x;
-    double y;
+    Point (point, x, y);
 } LineToAtom;
 
 typedef struct ArcAtom {
@@ -235,20 +235,20 @@ typedef struct ArcAtom {
 
 typedef struct QuadBezierAtom {
     PathAtom pathAtom;
-    double ctrlX;
-    double ctrlY;
-    double anchorX;
-    double anchorY;
+    Point (ctrl, ctrlX, ctrlY);
+    Point (anchor, anchorX, anchorY);
 } QuadBezierAtom;
 
 typedef struct CurveToAtom {
     PathAtom pathAtom;
-    double ctrlX1;
-    double ctrlY1;
-    double ctrlX2;
-    double ctrlY2;
-    double anchorX;
-    double anchorY;
+    union {
+        struct {
+            Point (ctrl1, ctrlX1, ctrlY1);
+            Point (ctrl2, ctrlX2, ctrlY2);
+            Point (anchor, anchorX, anchorY);
+        };
+        double path[];
+    };
 } CurveToAtom;
 
 typedef struct CloseAtom {
@@ -259,16 +259,14 @@ typedef struct CloseAtom {
 
 typedef struct EllipseAtom {
     PathAtom pathAtom;
-    double cx;
-    double cy;
+    Point (center, cx, cy);
     double rx;
     double ry;
 } EllipseAtom;
 
 typedef struct RectAtom {
     PathAtom pathAtom;
-    double x;
-    double y;
+    Point (origin, x, y);
     double width;
     double height;
 } RectAtom;

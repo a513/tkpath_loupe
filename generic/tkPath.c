@@ -1802,9 +1802,9 @@ TkPathExtGS(
 	} else if (CA > 1.0) {
 	    CA = 1.0;
 	}
-    }
-    if ((ca >= 1.0) && (CA >= 1.0) && (smaskBuf[0] == '\0')) {
-	return NULL;
+        if ((ca >= 1.0) && (CA >= 1.0)) {
+            return NULL;
+        }
     }
     PrintNumber(CAbuf, 3, CA);
     PrintNumber(cabuf, 3, ca);

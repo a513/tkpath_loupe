@@ -998,15 +998,15 @@ GenericPathToArea(
     if (atomPtr->type == PATH_ATOM_M) {
 	MoveToAtom *move = (MoveToAtom *) atomPtr;
 
-	PathApplyTMatrixToPoint(matrixPtr, &(move->x), currentT);
+	PathApplyTMatrixToPoint(matrixPtr, move->point, currentT);
     } else if (atomPtr->type == PATH_ATOM_ELLIPSE) {
 	EllipseAtom *ellipse = (EllipseAtom *) atomPtr;
 
-	PathApplyTMatrixToPoint(matrixPtr, &(ellipse->cx), currentT);
+	PathApplyTMatrixToPoint(matrixPtr, ellipse->center, currentT);
     } else if (atomPtr->type == PATH_ATOM_RECT) {
 	RectAtom *rect = (RectAtom *) atomPtr;
 
-	PathApplyTMatrixToPoint(matrixPtr, &(rect->x), currentT);
+	PathApplyTMatrixToPoint(matrixPtr, rect->origin, currentT);
     } else {
         return -1;
     }
@@ -1326,14 +1326,17 @@ AddQuadBezierSegments(
 {
     int numPoints;			/* Number of curve points to
                              * generate.  */
-    double control[6];
+    union {
+        double point[3][2];
+        double path[];
+    } control;
 
-    PathApplyTMatrixToPoint(matrixPtr, current, control);
-    PathApplyTMatrixToPoint(matrixPtr, &(quad->ctrlX), control+2);
-    PathApplyTMatrixToPoint(matrixPtr, &(quad->anchorX), control+4);
+    PathApplyTMatrixToPoint(matrixPtr, current, control.point[0]);
+    PathApplyTMatrixToPoint(matrixPtr, quad->ctrl, control.point[1]);
+    PathApplyTMatrixToPoint(matrixPtr, quad->anchor, control.point[2]);
 
     numPoints = kPathNumSegmentsQuadBezier;
-    QuadBezierSegments(control, 0, numPoints, coordPtr);
+    QuadBezierSegments(control.path, 0, numPoints, coordPtr);
 
     return numPoints;
 }
@@ -1347,15 +1350,18 @@ AddCurveToSegments(
 {
     int numSteps;				/* Number of curve points to
                                  * generate.  */
-    double control[8];
+    union {
+        double point[4][2];
+        double path[];
+    } control;
 
-    PathApplyTMatrixToPoint(matrixPtr, current, control);
-    PathApplyTMatrixToPoint(matrixPtr, &(curve->ctrlX1), control+2);
-    PathApplyTMatrixToPoint(matrixPtr, &(curve->ctrlX2), control+4);
-    PathApplyTMatrixToPoint(matrixPtr, &(curve->anchorX), control+6);
+    PathApplyTMatrixToPoint(matrixPtr, current, control.point[0]);
+    PathApplyTMatrixToPoint(matrixPtr, curve->ctrl1, control.point[1]);
+    PathApplyTMatrixToPoint(matrixPtr, curve->ctrl2, control.point[2]);
+    PathApplyTMatrixToPoint(matrixPtr, curve->anchor, control.point[3]);
 
     numSteps = kPathNumSegmentsCurveTo;
-    CurveSegments(control, 1, numSteps, coordPtr);
+    CurveSegments(control.path, 1, numSteps, coordPtr);
 
     return numSteps;
 }
@@ -1512,7 +1518,7 @@ MakeSubPathSegments(PathAtom **atomPtrPtr, double *polyPtr,
             case PATH_ATOM_L: {
                 LineToAtom *line = (LineToAtom *) atomPtr;
 
-                PathApplyTMatrixToPoint(matrixPtr, &(line->x), coordPtr);
+                PathApplyTMatrixToPoint(matrixPtr, line->point, coordPtr);
                 current[0] = line->x;
                 current[1] = line->y;
                 coordPtr += 2;
