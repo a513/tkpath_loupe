@@ -102,7 +102,7 @@ extern "C" {
 
 #define kPathUnitTMatrix  {1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
 
-#define Point(name, x, y) union {struct {double x, y;}; double name[];}
+#define Point(name, x, y) union {struct {double x, y;}; double name[2];}
 
 /*
  * Flag bits for gradient and style changes.
@@ -232,7 +232,7 @@ typedef struct CurveToAtom {
             Point (ctrl2, ctrlX2, ctrlY2);
             Point (anchor, anchorX, anchorY);
         };
-        double path[];
+        double path[6];
     };
 } CurveToAtom;
 

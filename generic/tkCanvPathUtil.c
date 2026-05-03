@@ -1328,7 +1328,7 @@ AddQuadBezierSegments(
                              * generate.  */
     union {
         double point[3][2];
-        double path[];
+        double path[6];
     } control;
 
     PathApplyTMatrixToPoint(matrixPtr, current, control.point[0]);
@@ -1352,7 +1352,7 @@ AddCurveToSegments(
                                  * generate.  */
     union {
         double point[4][2];
-        double path[];
+        double path[8];
     } control;
 
     PathApplyTMatrixToPoint(matrixPtr, current, control.point[0]);
