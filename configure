@@ -6297,7 +6297,7 @@ case ${TK_DEFS} in
 esac
 
 if test "${TEA_PLATFORM}" = "windows" -a "${USE_SDL}" != "yes" ; then
-    CLEANFILES="pkgIndex.tcl *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
+    CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb vc*.pch"
 
     vars="win/tkWinGDIPlusPath.cpp"
     for i in $vars; do
@@ -6381,7 +6381,7 @@ fi
 printf "%s\n" "$tcl_cv_cc_staticlib" >&6; }
 
 else
-    CLEANFILES="pkgIndex.tcl"
+    CLEANFILES=""
     if test "${USE_SDL}" = "yes" ; then
 
     vars="sdl/tkSDLAGGPath.cpp"
@@ -6487,7 +6487,7 @@ else
 
 
 	if test "${TEA_PLATFORM}" = "windows" ; then
-	    CLEANFILES="pkgIndex.tcl *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
+	    CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb vc*.pch"
 	    ## Check if the compiler accepts -static-libstdc++ (i.e. mingw)...
 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if the compiler understands -static-libstdc++" >&5
 printf %s "checking if the compiler understands -static-libstdc++... " >&6; }
