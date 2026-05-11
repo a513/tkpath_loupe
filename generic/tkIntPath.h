@@ -21,21 +21,6 @@
 extern "C" {
 #endif
 
-/* Check, if Tcl version supports Tcl_Size,
-   which was introduced in Tcl 8.7 and 9.
-*/
-#ifndef TCL_SIZE_MAX
-    #include <limits.h>
-    #define TCL_SIZE_MAX INT_MAX
-
-    #ifndef Tcl_Size
-        typedef int Tcl_Size;
-    #endif
-
-    #define TCL_SIZE_MODIFIER ""
-    #define Tcl_GetSizeIntFromObj Tcl_GetIntFromObj
-#endif
-
 /*
  * From tclInt.h version 1.118.2.11
  * Ensure WORDS_BIGENDIAN is defined correcly:
@@ -116,6 +101,8 @@ extern "C" {
 #define kPathNumSegmentsEllipse         48
 
 #define kPathUnitTMatrix  {1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
+
+#define tkpPointType(name, x, y) union {struct {double x, y;}; double name[2];}
 
 /*
  * Flag bits for gradient and style changes.
@@ -212,14 +199,12 @@ typedef struct LookupTable {
 typedef struct MoveToAtom {
     PathAtom pathAtom;		/* Generic stuff that's the same for all
                                  * types.  MUST BE FIRST IN STRUCTURE. */
-    double x;
-    double y;
+    tkpPointType (point, x, y);
 } MoveToAtom;
 
 typedef struct LineToAtom {
     PathAtom pathAtom;
-    double x;
-    double y;
+    tkpPointType (point, x, y);
 } LineToAtom;
 
 typedef struct ArcAtom {
@@ -235,20 +220,20 @@ typedef struct ArcAtom {
 
 typedef struct QuadBezierAtom {
     PathAtom pathAtom;
-    double ctrlX;
-    double ctrlY;
-    double anchorX;
-    double anchorY;
+    tkpPointType (ctrl, ctrlX, ctrlY);
+    tkpPointType (anchor, anchorX, anchorY);
 } QuadBezierAtom;
 
 typedef struct CurveToAtom {
     PathAtom pathAtom;
-    double ctrlX1;
-    double ctrlY1;
-    double ctrlX2;
-    double ctrlY2;
-    double anchorX;
-    double anchorY;
+    union {
+        struct {
+            tkpPointType (ctrl1, ctrlX1, ctrlY1);
+            tkpPointType (ctrl2, ctrlX2, ctrlY2);
+            tkpPointType (anchor, anchorX, anchorY);
+        };
+        double path[6];
+    };
 } CurveToAtom;
 
 typedef struct CloseAtom {
@@ -259,16 +244,14 @@ typedef struct CloseAtom {
 
 typedef struct EllipseAtom {
     PathAtom pathAtom;
-    double cx;
-    double cy;
+    tkpPointType (center, cx, cy);
     double rx;
     double ry;
 } EllipseAtom;
 
 typedef struct RectAtom {
     PathAtom pathAtom;
-    double x;
-    double y;
+    tkpPointType (origin, x, y);
     double width;
     double height;
 } RectAtom;

@@ -17,7 +17,7 @@ dnl	to configure the system for the local environment.
 # so you can encode the package version directly into the source files.
 #-----------------------------------------------------------------------
 
-AC_INIT([tkpath], [0.4.2])
+AC_INIT([tkpath], [0.4.3])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -164,7 +164,7 @@ case ${TK_DEFS} in
 esac
 
 if test "${TEA_PLATFORM}" = "windows" -a "${USE_SDL}" != "yes" ; then
-    CLEANFILES="pkgIndex.tcl *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
+    CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb vc*.pch"
     TEA_ADD_SOURCES([win/tkWinGDIPlusPath.cpp])
     TEA_ADD_LIBS([gdiplus.lib gdi32.lib])
     #TEA_ADD_INCLUDES([-I\"$(${CYGPATH} ${srcdir}/win)\"])
@@ -173,11 +173,11 @@ if test "${TEA_PLATFORM}" = "windows" -a "${USE_SDL}" != "yes" ; then
     AC_CACHE_CHECK([if the compiler understands -static-libstdc++],
         tcl_cv_cc_staticlib, [
         hold_cflags=$CFLAGS; CFLAGS="$CFLAGS -static-libstdc++"
-        AC_TRY_COMPILE(,, tcl_cv_cc_staticlib=yes, tcl_cv_cc_staticlib=no)
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[tcl_cv_cc_staticlib=yes],[tcl_cv_cc_staticlib=no])
         CFLAGS=$hold_cflags])
 
 else
-    CLEANFILES="pkgIndex.tcl"
+    CLEANFILES=""
     if test "${USE_SDL}" = "yes" ; then
 	TEA_ADD_SOURCES([sdl/tkSDLAGGPath.cpp])
 	TEA_ADD_CFLAGS([-DPLATFORM_SDL=1])
@@ -190,12 +190,12 @@ else
 	TEA_ADD_INCLUDES([`freetype-config --cflags`])
 	TEA_ADD_LIBS([`freetype-config --libs`])
 	if test "${TEA_PLATFORM}" = "windows" ; then
-	    CLEANFILES="pkgIndex.tcl *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
+	    CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb vc*.pch"
 	    ## Check if the compiler accepts -static-libstdc++ (i.e. mingw)...
 	    AC_CACHE_CHECK([if the compiler understands -static-libstdc++],
 		tcl_cv_cc_staticlib, [
 		hold_cflags=$CFLAGS; CFLAGS="$CFLAGS -static-libstdc++"
-		AC_TRY_COMPILE(,, tcl_cv_cc_staticlib=yes, tcl_cv_cc_staticlib=no)
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[tcl_cv_cc_staticlib=yes],[tcl_cv_cc_staticlib=no])
 		CFLAGS=$hold_cflags])
 	fi
     elif test "${TEA_WINDOWINGSYSTEM}" = "aqua" ; then
@@ -311,4 +311,5 @@ fi
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl])
+AC_OUTPUT
