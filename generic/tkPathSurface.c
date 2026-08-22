@@ -13,6 +13,9 @@
 #include "tkCanvArrow.h"
 /*ORLOV*/
 #include <stdarg.h>
+#ifdef WIN32
+#include <window.h>
+#endif
 
 typedef struct {
     Tcl_HashTable	surfaceHash;
