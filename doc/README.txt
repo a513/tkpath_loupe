@@ -579,5 +579,13 @@ The x and y coordinates define the center of the area being captured
 (I emphasize, the CENTER), w is the width of the area, and 
 h is the height of the area being captured.
 
+You can read about this package here:
+
+https://wiki.tcl-lang.org/page/SVG+widgets
+
+You can also find a demo of SVG widgets there:
+
+https://cloudtk-app.tcl-lang.org/cloudtk/VNC?session=new&Tk=SVG-widgets-Part-I
+
 BSD style license.
 
