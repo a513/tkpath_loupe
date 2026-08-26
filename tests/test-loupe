@@ -28,3 +28,4 @@ label $t.lab2 -image $img2
 #Screenshot of a rectangular screen region centered at 100x100, 200 pixels wide, and 200 pixels high. Zoom 2x
 ::tkp::loupe $img2 0 0 400 400 2
 pack $t.lab2 -padx 5m -pady 5m
+
